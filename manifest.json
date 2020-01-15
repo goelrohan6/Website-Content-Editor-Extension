@@ -14,7 +14,8 @@
     "128": "icon-off.png"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "notifications"
   ],
   "commands": {
     "toggle-designMode": {
