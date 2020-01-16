@@ -2,6 +2,7 @@ const tabDesignModeMapping = {};
 let activeTabId;
 
 function setDesignModeOff(tabId, showNotification = false) {
+  console.log(tabId, "❌");
   tabDesignModeMapping[tabId] = "off";
   chrome.tabs.executeScript({
     code: 'document.designMode="off"'
@@ -12,6 +13,7 @@ function setDesignModeOff(tabId, showNotification = false) {
   }
 }
 function setDesignModeOn(tabId, showNotification = false) {
+  console.log(tabId, "✅");
   tabDesignModeMapping[tabId] = "on";
   chrome.tabs.executeScript({
     code: 'document.designMode="on"'
@@ -80,5 +82,20 @@ chrome.commands.onCommand.addListener(function(command) {
     } else {
       setDesignModeOn(activeTabId, true);
     }
+  }
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log("onMessage: request", request)
+  if (request.message === 'turnOn') {
+    setDesignModeOn(activeTabId, true);
+    return true;
+  } else if (request.message === 'turnOff') {
+    setDesignModeOff(activeTabId, true);
+    return true;
+  }
+  if (request.message === "getStatusOfCurrentTab") {
+    sendResponse(getDesignModeForTab(activeTabId));
+    return true;
   }
 });
